@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misión Universo 2030</title>
+<style>
+    :root{
+        --bg1:#07152f;
+        --bg2:#14285a;
+        --panel:#f8fbff;
+        --ink:#183052;
+        --accent:#ffcf4a;
+        --accent2:#6de1ff;
+        --good:#27b36a;
+        --bad:#e85662;
+        --muted:#d8e5f5;
+    }
+    *{box-sizing:border-box}
+    html,body{
+        margin:0;
+        width:100%;
+        height:100%;
+        overflow:hidden;
+        font-family: "Trebuchet MS", Arial, sans-serif;
+        background:
+          radial-gradient(circle at 15% 20%, rgba(255,255,255,.85) 0 1px, transparent 2px),
+          radial-gradient(circle at 78% 16%, rgba(255,255,255,.8) 0 1.5px, transparent 2.5px),
+          radial-gradient(circle at 62% 82%, rgba(255,255,255,.8) 0 1px, transparent 2px),
+          radial-gradient(circle at 30% 75%, rgba(255,255,255,.7) 0 1.5px, transparent 2.5px),
+          linear-gradient(135deg,var(--bg1),var(--bg2));
+        color:white;
+    }
+    body:before, body:after{
+        content:"";
+        position:fixed;
+        border-radius:50%;
+        opacity:.18;
+        filter:blur(1px);
+    }
+    body:before{width:220px;height:220px;background:#7e8cff;right:-60px;top:-70px}
+    body:after{width:270px;height:270px;background:#25d7ff;left:-120px;bottom:-140px}
+    .app{
+        width:min(1120px, 96vw);
+        height:min(690px, 94vh);
+        margin:3vh auto;
+        display:grid;
+        grid-template-rows:auto 1fr auto;
+        gap:12px;
+        position:relative;
+        z-index:1;
+    }
+    header{
+        display:grid;
+        grid-template-columns:1fr auto;
+        gap:16px;
+        align-items:center;
+    }
+    .titlebox{
+        display:flex;
+        align-items:center;
+        gap:14px;
+    }
+    .logo{
+        width:64px;height:64px;border-radius:18px;
+        display:grid;place-items:center;
+        font-size:38px;
+        background:linear-gradient(145deg,#ffd85a,#ffae32);
+        color:#14285a;
+        box-shadow:0 7px 0 rgba(0,0,0,.2);
+        transform:rotate(-3deg);
+    }
+    h1{margin:0;font-size:clamp(25px,3vw,42px);line-height:1}
+    .subtitle{margin:6px 0 0;color:#d6e9ff;font-size:clamp(13px,1.4vw,18px)}
+    .status{
+        min-width:260px;
+        background:rgba(255,255,255,.12);
+        border:1px solid rgba(255,255,255,.22);
+        border-radius:18px;
+        padding:10px 14px;
+        backdrop-filter:blur(7px);
+    }
+    .status-line{display:flex;justify-content:space-between;gap:18px;font-weight:bold;margin-bottom:8px}
+    .bar{height:12px;background:rgba(0,0,0,.28);border-radius:999px;overflow:hidden}
+    .bar > div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ff9f39);transition:.35s}
+    main{
+        min-height:0;
+        display:grid;
+        grid-template-columns:260px 1fr;
+        gap:14px;
+    }
+    .side{
+        background:rgba(255,255,255,.11);
+        border:1px solid rgba(255,255,255,.2);
+        border-radius:24px;
+        padding:18px;
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+        backdrop-filter:blur(7px);
+    }
+    .astronaut{
+        text-align:center;
+        font-size:104px;
+        filter:drop-shadow(0 8px 4px rgba(0,0,0,.22));
+        animation:float 3.4s ease-in-out infinite;
+    }
+    @keyframes float{50%{transform:translateY(-8px) rotate(2deg)}}
+    .mission{
+        background:rgba(5,17,44,.45);
+        border-radius:16px;
+        padding:13px;
+        line-height:1.35;
+        font-size:15px;
+    }
+    .legend{
+        font-size:13px;
+        color:#dbeaff;
+        line-height:1.45;
+        margin-top:12px;
+    }
+    .card{
+        background:var(--panel);
+        color:var(--ink);
+        border-radius:26px;
+        padding:clamp(18px,2.4vw,34px);
+        box-shadow:0 13px 0 rgba(1,9,25,.25);
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        min-height:0;
+        position:relative;
+        overflow:hidden;
+    }
+    .card:before{
+        content:"";
+        position:absolute;right:-70px;top:-70px;width:190px;height:190px;border-radius:50%;
+        background:rgba(109,225,255,.18);
+    }
+    .badge{
+        display:inline-flex;
+        width:max-content;
+        padding:7px 12px;
+        border-radius:999px;
+        background:#e8f7ff;
+        color:#276183;
+        font-size:14px;
+        font-weight:bold;
+        margin-bottom:12px;
+    }
+    .question{
+        font-size:clamp(22px,2.7vw,34px);
+        line-height:1.14;
+        font-weight:900;
+        margin:0 0 20px;
+        max-width:900px;
+    }
+    .answers{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:12px;
+    }
+    button{
+        font:inherit;
+        cursor:pointer;
+        border:0;
+    }
+    .answer{
+        min-height:72px;
+        border-radius:17px;
+        background:white;
+        color:var(--ink);
+        border:3px solid var(--muted);
+        font-weight:bold;
+        padding:12px 16px;
+        text-align:left;
+        box-shadow:0 5px 0 #b9cae0;
+        transition:.12s;
+        display:flex;align-items:center;gap:10px;
+    }
+    .answer:hover{transform:translateY(-2px);border-color:var(--accent2)}
+    .answer:active{transform:translateY(2px);box-shadow:0 2px 0 #b9cae0}
+    .answer.correct{background:#e8fff2;border-color:var(--good);box-shadow:0 5px 0 #159050}
+    .answer.wrong{background:#fff0f2;border-color:var(--bad);box-shadow:0 5px 0 #b83343}
+    .answer:disabled{cursor:default}
+    .icon{font-size:25px}
+    .feedback{
+        min-height:52px;
+        margin-top:17px;
+        border-radius:14px;
+        padding:11px 14px;
+        display:none;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        font-weight:bold;
+    }
+    .feedback.show{display:flex}
+    .feedback.good{background:#e8fff2;color:#0d7c42}
+    .feedback.bad{background:#fff0f2;color:#a12839}
+    .next{
+        border-radius:12px;
+        padding:10px 17px;
+        background:var(--ink);
+        color:white;
+        font-weight:bold;
+        white-space:nowrap;
+    }
+    footer{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:12px;
+        color:#dbeaff;
+        font-size:14px;
+    }
+    .smallbtn{
+        background:rgba(255,255,255,.13);
+        color:white;
+        border:1px solid rgba(255,255,255,.23);
+        padding:8px 13px;
+        border-radius:12px;
+    }
+    .end{
+        text-align:center;
+    }
+    .end .big{font-size:88px;line-height:1}
+    .end h2{font-size:40px;margin:12px 0 8px}
+    .end p{font-size:19px;line-height:1.45;max-width:670px;margin:0 auto 18px}
+    .restart{
+        background:linear-gradient(145deg,#ffd85a,#ffae32);
+        color:#17325b;
+        font-weight:900;
+        padding:14px 25px;
+        border-radius:15px;
+        box-shadow:0 6px 0 #d98a22;
+    }
+    @media(max-width:800px){
+        .app{height:96vh;margin:2vh auto}
+        header{grid-template-columns:1fr}
+        .status{min-width:0}
+        main{grid-template-columns:1fr}
+        .side{display:none}
+        .answers{grid-template-columns:1fr 1fr}
+        .answer{min-height:62px}
+    }
+    @media(max-width:520px){
+        .answers{grid-template-columns:1fr}
+        .answer{min-height:52px}
+        .logo{width:52px;height:52px;font-size:30px}
+        .status-line{font-size:13px}
+        .question{margin-bottom:12px}
+        footer{font-size:12px}
+    }
+</style>
+</head>
+<body>
+<div class="app">
+    <header>
+        <div class="titlebox">
+            <div class="logo">🛰️</div>
+            <div>
+                <h1>Misión Universo 2030</h1>
+                <p class="subtitle">Juego de refuerzo · UD 2 · 5.º de Primaria</p>
+            </div>
+        </div>
+        <div class="status">
+            <div class="status-line">
+                <span id="counter">Pregunta 1 de 12</span>
+                <span id="score">⭐ 0 · ❤️❤️❤️</span>
+            </div>
+            <div class="bar"><div id="progress"></div></div>
+        </div>
+    </header>
+
+    <main>
+        <aside class="side">
+            <div>
+                <div class="astronaut" id="astro">👩‍🚀</div>
+                <div class="mission">
+                    <strong>Tu misión:</strong><br>
+                    Recuperar la energía del Observatorio 2030 respondiendo correctamente a preguntas sobre el universo.
+                </div>
+            </div>
+            <div class="legend">
+                Cada acierto suma una estrella. Si fallas, recibirás una pista para aprender y continuar.
+            </div>
+        </aside>
+
+        <section class="card" id="card">
+            <span class="badge" id="category">Universo y galaxias</span>
+            <h2 class="question" id="question"></h2>
+            <div class="answers" id="answers"></div>
+            <div class="feedback" id="feedback">
+                <span id="feedbackText"></span>
+                <button class="next" id="nextBtn">Siguiente ➜</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <span>Agentes 2030 · Aprende jugando</span>
+        <button class="smallbtn" id="resetBtn">Reiniciar partida</button>
+    </footer>
+</div>
+
+<script>
+const bank = [
+  {cat:"Universo y galaxias", q:"¿Qué es una galaxia?", a:["Un conjunto enorme de estrellas, gas y polvo","Un planeta con muchos satélites","Una estrella pequeña","Una nave espacial"], c:0, tip:"La Vía Láctea es la galaxia en la que se encuentra nuestro sistema solar.", icons:["🌌","🪐","⭐","🚀"]},
+  {cat:"Sistema solar", q:"¿Qué astro ocupa el centro del sistema solar?", a:["La Tierra","La Luna","El Sol","Júpiter"], c:2, tip:"Los planetas giran alrededor del Sol.", icons:["🌍","🌙","☀️","🟠"]},
+  {cat:"Sistema solar", q:"¿Cuál es el planeta más cercano al Sol?", a:["Venus","Mercurio","Marte","Neptuno"], c:1, tip:"Mercurio es el primer planeta desde el Sol.", icons:["🟡","⚪","🔴","🔵"]},
+  {cat:"Sistema solar", q:"¿Cuál es el orden correcto de los cuatro primeros planetas?", a:["Mercurio, Venus, Tierra, Marte","Venus, Mercurio, Marte, Tierra","Tierra, Marte, Venus, Mercurio","Mercurio, Tierra, Venus, Marte"], c:0, tip:"Recuerda: Mercurio, Venus, Tierra y Marte.", icons:["1️⃣","2️⃣","3️⃣","4️⃣"]},
+  {cat:"La Tierra en movimiento", q:"¿Qué movimiento de la Tierra produce el día y la noche?", a:["Traslación","Rotación","Revolución lunar","Gravedad"], c:1, tip:"La rotación es el giro de la Tierra sobre sí misma.", icons:["🔄","🌍","🌙","🧲"]},
+  {cat:"La Tierra en movimiento", q:"¿Cuánto tarda aproximadamente la Tierra en dar una vuelta alrededor del Sol?", a:["24 horas","7 días","Un mes","Un año"], c:3, tip:"La traslación dura aproximadamente 365 días.", icons:["🕐","📅","🗓️","☀️"]},
+  {cat:"Tierra, Luna y Sol", q:"La Luna es…", a:["Una estrella","Un planeta","Un satélite natural","Una galaxia"], c:2, tip:"La Luna gira alrededor de la Tierra.", icons:["⭐","🪐","🌙","🌌"]},
+  {cat:"Tierra, Luna y Sol", q:"¿Por qué vemos diferentes fases de la Luna?", a:["Porque cambia de forma","Porque vemos distintas partes iluminadas por el Sol","Porque se apaga algunas noches","Porque se aleja de la Tierra"], c:1, tip:"La Luna no cambia de forma; cambia la parte iluminada que vemos desde la Tierra.", icons:["🔷","🌗","💡","↗️"]},
+  {cat:"Exploración espacial", q:"¿Para qué sirven los satélites artificiales?", a:["Solo para hacer fotografías","Para comunicar, observar y recoger datos","Para iluminar la noche","Para mover los planetas"], c:1, tip:"Los satélites artificiales ayudan en comunicaciones, meteorología, mapas y ciencia.", icons:["📷","🛰️","💡","🪐"]},
+  {cat:"Exploración espacial", q:"¿Qué instrumento se utiliza para observar astros lejanos?", a:["Microscopio","Telescopio","Termómetro","Brújula"], c:1, tip:"El telescopio permite observar objetos muy lejanos del universo.", icons:["🔬","🔭","🌡️","🧭"]},
+  {cat:"Cielo oscuro", q:"¿Qué es la contaminación lumínica?", a:["Exceso de luz artificial durante la noche","Falta de oxígeno","Basura en el espacio","Humo de los cohetes"], c:0, tip:"Demasiada luz nocturna dificulta ver las estrellas y afecta a seres vivos.", icons:["🏙️","💨","🗑️","🚀"]},
+  {cat:"Cielo oscuro", q:"¿Qué acción ayuda a reducir la contaminación lumínica?", a:["Dejar todas las luces encendidas","Orientar las luces hacia el cielo","Apagar luces innecesarias y dirigirlas al suelo","Usar focos más potentes"], c:2, tip:"La iluminación responsable permite ahorrar energía y proteger el cielo nocturno.", icons:["💡","⬆️","🌙","🔦"]},
+  {cat:"Sistema solar", q:"¿Cuál es el planeta conocido por sus anillos más visibles?", a:["Saturno","Marte","Mercurio","Tierra"], c:0, tip:"Saturno posee un gran sistema de anillos.", icons:["🪐","🔴","⚪","🌍"]},
+  {cat:"Universo y galaxias", q:"El Sol es…", a:["Un planeta","Una estrella","Un satélite","Un cometa"], c:1, tip:"El Sol es la estrella que proporciona luz y calor a la Tierra.", icons:["🪐","☀️","🌙","☄️"]},
+  {cat:"Sistema solar", q:"¿Qué planeta es el más grande del sistema solar?", a:["Tierra","Marte","Júpiter","Venus"], c:2, tip:"Júpiter es el gigante del sistema solar.", icons:["🌍","🔴","🟠","🟡"]}
+];
+
+let questions = [];
+let index = 0;
+let points = 0;
+let lives = 3;
+let locked = false;
+
+const qEl = document.getElementById("question");
+const catEl = document.getElementById("category");
+const ansEl = document.getElementById("answers");
+const feedback = document.getElementById("feedback");
+const feedbackText = document.getElementById("feedbackText");
+const nextBtn = document.getElementById("nextBtn");
+const progress = document.getElementById("progress");
+const counter = document.getElementById("counter");
+const score = document.getElementById("score");
+const card = document.getElementById("card");
+const astro = document.getElementById("astro");
+
+function shuffle(arr){
+  return [...arr].sort(()=>Math.random()-.5);
+}
+
+function start(){
+  questions = shuffle(bank).slice(0,12);
+  index=0;points=0;lives=3;locked=false;
+  astro.textContent="👩‍🚀";
+  render();
+}
+
+function render(){
+  locked=false;
+  feedback.className="feedback";
+  const item=questions[index];
+  catEl.textContent=item.cat;
+  qEl.textContent=item.q;
+  ansEl.innerHTML="";
+  item.a.forEach((txt,i)=>{
+    const b=document.createElement("button");
+    b.className="answer";
+    b.innerHTML=`<span class="icon">${item.icons[i]}</span><span>${txt}</span>`;
+    b.onclick=()=>choose(i,b);
+    ansEl.appendChild(b);
+  });
+  counter.textContent=`Pregunta ${index+1} de ${questions.length}`;
+  progress.style.width=`${(index/questions.length)*100}%`;
+  updateScore();
+}
+
+function choose(i,button){
+  if(locked) return;
+  locked=true;
+  const item=questions[index];
+  const buttons=[...document.querySelectorAll(".answer")];
+  buttons.forEach(b=>b.disabled=true);
+  buttons[item.c].classList.add("correct");
+
+  if(i===item.c){
+    points++;
+    button.classList.add("correct");
+    feedback.className="feedback show good";
+    feedbackText.textContent="✅ ¡Respuesta correcta! El observatorio recupera energía.";
+    astro.textContent="🧑‍🚀";
+  }else{
+    lives=Math.max(0,lives-1);
+    button.classList.add("wrong");
+    feedback.className="feedback show bad";
+    feedbackText.textContent="💡 " + item.tip;
+    astro.textContent="👨‍🚀";
+  }
+  updateScore();
+}
+
+function updateScore(){
+  score.textContent=`⭐ ${points} · ${"❤️".repeat(lives)}${"🤍".repeat(3-lives)}`;
+}
+
+function next(){
+  index++;
+  if(index>=questions.length){
+    endGame();
+  }else{
+    render();
+  }
+}
+
+function endGame(){
+  progress.style.width="100%";
+  counter.textContent="Misión completada";
+  let medal="🥉",title="Buen entrenamiento",msg="Has reforzado contenidos importantes. Repite la misión para mejorar tu puntuación.";
+  if(points>=10){medal="🏆";title="¡Observatorio salvado!";msg="Dominas los contenidos esenciales del universo. Has conseguido la insignia de Agente Astronómico 2030."}
+  else if(points>=7){medal="🥈";title="¡Gran misión!";msg="Has recuperado casi toda la energía del observatorio. Un nuevo intento te permitirá alcanzar la insignia máxima."}
+  card.innerHTML=`
+    <div class="end">
+      <div class="big">${medal}</div>
+      <h2>${title}</h2>
+      <p>Resultado: <strong>${points} de ${questions.length} estrellas</strong>.<br>${msg}</p>
+      <button class="restart" onclick="location.reload()">Jugar otra vez</button>
+    </div>`;
+}
+
+nextBtn.addEventListener("click",next);
+document.getElementById("resetBtn").addEventListener("click",start);
+start();
+</script>
+</body>
+</html>
